@@ -109,6 +109,7 @@
   <a href="#overlap">Priority &amp; Overlap</a>
   <a href="#coverage">Coverage Matrix</a>
   <a href="#fortiguard">FortiGuard Integration</a>
+  <a href="#architecture">Network Architecture</a>
 </nav>
 
 <div class="main">
@@ -224,6 +225,14 @@
   <div class="alert alert-blue">
     <span class="alert-icon">ℹ</span>
     <div><strong>FortiGuard native signatures:</strong> FortiGuard already covers Ollama, Claude (cloud), ChatGPT, and other cloud AI services. These signatures cover the same API formats on local/internal network traffic. They complement — not replace — FortiGuard signatures.</div>
+  </div>
+  <div class="alert alert-blue">
+    <span class="alert-icon">ℹ</span>
+    <div><strong>Application and Filter Overrides — per-application only:</strong> After saving signatures, add them to your Application Control profile under <strong>Security Profiles → Application Control → Application and Filter Overrides</strong>. Overrides operate at the per-application level — multi-select individual signatures and assign an action (Monitor or Block). The GenAI category (36) is already present in the global Application Control settings and does not need to be added as a separate override entry.</div>
+  </div>
+  <div class="alert alert-yellow">
+    <span class="alert-icon">⚡</span>
+    <div><strong>Layer 2 traffic — micro-segmentation required:</strong> These signatures only inspect traffic that crosses the FortiGate at layer 3. If the inference server and the client are on the <strong>same subnet</strong>, their traffic will not pass through the FortiGate and these signatures will not fire. Micro-segmentation — placing inference servers on a dedicated VLAN that routes through the FortiGate — is required to enforce inspection on same-subnet LLM traffic.</div>
   </div>
 </section>
 
@@ -651,6 +660,7 @@
       <tr><td>Any client → unknown future /v1/messages server</td><td class="yes">✓ #05</td><td class="part">✓ if known UA</td><td class="no">— (Anthropic format)</td><td class="no">—</td></tr>
       <tr><td>Browser → ChatGPT / Claude.ai</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓ Native</td></tr>
       <tr><td>Any client → Ollama</td><td class="yes">✓ #03</td><td class="part">✓ if known UA</td><td class="yes">✓ #09–35</td><td class="yes">✓ Native</td></tr>
+      <tr><td>Client + server on same subnet (no micro-seg)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
     </tbody>
   </table>
   <p style="font-size:11px;color:var(--text-dim);margin-top:8px;">✓ = matched &nbsp;|&nbsp; — = not matched &nbsp;|&nbsp; ✓ partial = matched only if that specific condition is present</p>
@@ -687,6 +697,28 @@ diagnose autoupdate versions | grep -A 6 GenAI
 
 <span class="cmt"># View application control log entries</span>
 execute log display</pre>
+</section>
+
+<!-- SECTION 10: ARCHITECTURE -->
+<span class="section-anchor" id="architecture"></span>
+<section>
+  <div class="section-header"><span class="section-num">§10</span><h2>Network Architecture Considerations</h2></div>
+  <h3>Layer 2 Traffic and Micro-Segmentation</h3>
+  <div class="alert alert-yellow">
+    <span class="alert-icon">⚡</span>
+    <div><strong>Same-subnet traffic bypasses the FortiGate entirely.</strong> These signatures only inspect traffic that crosses the FortiGate at layer 3. If the LM Studio server (or any other inference server) and the client making requests sit on the same subnet, their traffic never crosses a layer 3 boundary and the FortiGate will not see it — the signatures will not fire regardless of how the Application Control profile is configured.</div>
+  </div>
+  <p style="font-size:13px;color:var(--text);margin-bottom:16px;">To enforce application control on same-subnet LLM traffic, <strong>micro-segmentation</strong> is required. This means placing inference servers on a dedicated VLAN or subnet that routes through the FortiGate, so that all client traffic — regardless of client location — must cross a layer 3 boundary to reach the inference server.</p>
+  <table>
+    <thead><tr><th>Scenario</th><th>Traffic visible to FortiGate?</th><th>Signatures fire?</th></tr></thead>
+    <tbody>
+      <tr><td>Client and server on different subnets (routed through FortiGate)</td><td class="yes">✓ Yes</td><td class="yes">✓ Yes</td></tr>
+      <tr><td>Client and server on same subnet, inference server on dedicated VLAN (micro-segmented)</td><td class="yes">✓ Yes</td><td class="yes">✓ Yes</td></tr>
+      <tr><td>Client and server on same flat subnet, no micro-segmentation</td><td class="no">— No</td><td class="no">— No</td></tr>
+      <tr><td>Localhost only (LM Studio and client on same machine)</td><td class="no">— No</td><td class="no">— No (endpoint control required)</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--text-dim);margin-top:8px;">Localhost traffic (where both the inference server and the client run on the same machine) is never visible to the FortiGate and requires endpoint-level controls rather than network-level inspection.</p>
 </section>
 
 <footer>

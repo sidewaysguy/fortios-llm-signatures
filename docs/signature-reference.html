@@ -672,17 +672,17 @@
   <div class="section-header"><span class="section-num">§9</span><h2>FortiGuard Integration Notes</h2></div>
   <div class="alert alert-green">
     <span class="alert-icon">✓</span>
-    <div><strong>These signatures complement FortiGuard — they do not overlap.</strong> FortiGuard handles traffic to cloud AI endpoints. This library handles the same API formats on local and internal network traffic where there is no cloud destination for FortiGuard to match on.</div>
+    <div><strong>These signatures complement FortiGuard — they do not replace it.</strong> The distinction is not simply cloud versus local. FortiGuard signatures may exist for some of these applications but may not match against the specific local communication mechanisms documented here — the URI paths, User-Agent headers, and POST body patterns used by local inference servers and their clients. FortiGuard signatures may also be updated in the future to detect some of these patterns, or local applications may evolve in ways that cause FortiGuard signatures to trigger where they previously did not. This library's value is in the specific identification mechanisms discovered through direct traffic analysis of local LLM infrastructure. Always verify current FortiGuard coverage in your own environment.</div>
   </div>
   <table>
-    <thead><tr><th>Application</th><th>FortiGuard Covers</th><th>This Library Covers</th></tr></thead>
+    <thead><tr><th>Application</th><th>FortiGuard Coverage</th><th>This Library Adds</th></tr></thead>
     <tbody>
-      <tr><td class="bright">Claude / Anthropic</td><td class="dim">api.anthropic.com cloud traffic</td><td class="green">Local /v1/messages servers + Claude Code client UA</td></tr>
-      <tr><td class="bright">Ollama</td><td class="dim">ollama.com pull/registry traffic</td><td class="green">Local Ollama API at /v1/chat/completions</td></tr>
-      <tr><td class="bright">ChatGPT / OpenAI</td><td class="dim">api.openai.com cloud traffic</td><td class="green">Local OpenAI-compatible servers, Python SDK client</td></tr>
-      <tr><td class="bright">LM Studio</td><td class="dim">Not in FortiGuard (local-only app)</td><td class="green">Full coverage — native API, Anthropic API, model identity</td></tr>
-      <tr><td class="bright">AnythingLLM</td><td class="dim">Not in FortiGuard (self-hosted)</td><td class="green">Full coverage — server endpoint + client UA</td></tr>
-      <tr><td class="bright">Model families</td><td class="dim">Not applicable (not cloud services)</td><td class="green">All 27 model signatures cover local deployment</td></tr>
+      <tr><td class="bright">Claude / Anthropic</td><td class="dim">Signatures exist targeting Anthropic API patterns</td><td class="green">Local /v1/messages servers and Claude Code client UA not matched by FortiGuard cloud signatures</td></tr>
+      <tr><td class="bright">Ollama</td><td class="dim">Signatures exist for Ollama</td><td class="green">Local Ollama API /v1/chat/completions serving — FortiGuard may not match all local serving patterns</td></tr>
+      <tr><td class="bright">ChatGPT / OpenAI</td><td class="dim">Signatures exist targeting OpenAI API patterns</td><td class="green">Local OpenAI-compatible servers and Python SDK client UA</td></tr>
+      <tr><td class="bright">LM Studio</td><td class="dim">No FortiGuard signature (local-only app at time of testing)</td><td class="green">Full coverage — native API, Anthropic API, model identity</td></tr>
+      <tr><td class="bright">AnythingLLM</td><td class="dim">No FortiGuard signature (self-hosted at time of testing)</td><td class="green">Full coverage — server endpoint and client UA</td></tr>
+      <tr><td class="bright">Model families</td><td class="dim">Not applicable — FortiGuard does not identify model-level traffic</td><td class="green">All 27 model signatures for local deployment</td></tr>
     </tbody>
   </table>
   <h3>Verification Commands</h3>

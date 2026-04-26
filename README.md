@@ -24,7 +24,7 @@ Use these signatures to:
 
 ### Relationship to FortiGuard Signatures
 
-These signatures **complement** — they do not replace — FortiGuard signatures. FortiGuard handles cloud-destined traffic. This library handles the same OpenAI-compatible and Anthropic-compatible API formats when they appear on internal network traffic.
+These signatures **complement** — they do not replace — FortiGuard signatures. The distinction is not simply cloud versus local: FortiGuard signatures may exist for some of these applications but may not match against the specific local communication mechanisms documented here — the URI paths, User-Agent headers, and POST body patterns used by local inference servers and their clients. FortiGuard signatures may also be updated in the future to detect some of these patterns, or local applications may evolve in ways that cause FortiGuard signatures to trigger. This library's value is in the specific identification mechanisms discovered through direct traffic analysis of local LLM infrastructure.
 
 ---
 
@@ -125,6 +125,21 @@ When multiple signatures match the same session, FortiOS selects the highest wei
 30  OpenAI-compat catch-all
 25  Anthropic-compat catch-all
 ```
+
+---
+
+## FortiGuard Integration Notes
+
+The table below reflects the state of FortiGuard signatures as tested on FortiOS 7.6.6 in April 2026. FortiGuard signatures are updated continuously — coverage may have expanded since this was written, and the local application layer may evolve in ways that cause FortiGuard signatures to trigger where they previously did not. Always verify current FortiGuard coverage in your environment.
+
+| Application | FortiGuard Coverage | This Library Adds |
+|-------------|--------------------|-----------------|
+| Claude / Anthropic | Signatures exist targeting Anthropic API patterns | Local `/v1/messages` servers and Claude Code client UA not matched by FortiGuard cloud signatures |
+| Ollama | Signatures exist for Ollama | Local Ollama API `/v1/chat/completions` serving — FortiGuard may not match all local serving patterns |
+| ChatGPT / OpenAI | Signatures exist targeting OpenAI API patterns | Local OpenAI-compatible servers and Python SDK client UA |
+| LM Studio | No FortiGuard signature (local-only app at time of testing) | Full coverage — native API, Anthropic API, model identity |
+| AnythingLLM | No FortiGuard signature (self-hosted at time of testing) | Full coverage — server endpoint and client UA |
+| Model families | Not applicable — FortiGuard does not identify model-level traffic | All 27 model signatures for local deployment |
 
 ---
 

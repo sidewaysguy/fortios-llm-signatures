@@ -7,6 +7,8 @@
 [![Category](https://img.shields.io/badge/Category-36%20GenAI-green?style=flat-square)](#requirements)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
+**[📖 View the Interactive Reference →](https://sidewaysguy.github.io/fortios-llm-signatures/docs/signature-reference.html)**
+
 ---
 
 ## Overview
@@ -36,7 +38,7 @@ These signatures **complement** — they do not replace — FortiGuard signature
 | AnythingLLM | Current (April 2026) |
 | SSL Inspection | Deep inspection profile |
 
-> **Compatibility note:** These signatures use standard F-SBID syntax and `config application custom`, which has been available since FortiOS 6.x. They should work on FortiOS 6.4+ however they have only been tested and confirmed working on 7.6.6. Category 36 (GenAI) is required and was introduced in FortiOS 7.4. If you are running an earlier version, update the category to the most appropriate available option.
+> **Compatibility note:** These signatures use standard F-SBID syntax and `config application custom`, which has been available since FortiOS 6.x. They should work on FortiOS 7.4+ however they have only been tested and confirmed working on 7.6.6. Category 36 (GenAI) is required and was introduced in FortiOS 7.4. If you are running an earlier version, update the category to the most appropriate available option.
 
 ---
 
@@ -203,13 +205,14 @@ These signatures do not rely on port matching. LM Studio defaults to port 1234, 
 
 ## Reference Documentation
 
-The complete reference with interactive navigation, weight hierarchy, priority resolution table, traffic coverage matrix, and FortiGuard integration notes is available in:
+The full interactive reference with navigation, weight hierarchy, priority resolution, coverage matrix, and FortiGuard integration notes is available online:
 
+**[📖 Interactive Reference →](https://sidewaysguy.github.io/fortios-llm-signatures/docs/signature-reference.html)**
+
+Or open locally from the repo:
 ```
 docs/signature-reference.html
 ```
-
-Open locally in any browser — no server required.
 
 ---
 
@@ -219,6 +222,8 @@ Open locally in any browser — no server required.
 fortios-llm-signatures/
 ├── README.md
 ├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── LICENSE
 ├── signatures/
 │   ├── 00-all-signatures.conf      # Complete set — single paste
 │   ├── 01-infrastructure.conf      # Sigs 01–08
@@ -232,19 +237,9 @@ fortios-llm-signatures/
 
 ## Contributing
 
-Contributions are welcome, particularly for:
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for the full process, signature standards, and submission requirements.
 
-- **New model families** — as new base models are released and appear on [lmstudio.ai/models](https://lmstudio.ai/models) or [huggingface.co/models](https://huggingface.co/models)
-- **New fine-tune organizations** — popular community fine-tuners with distinct model naming patterns
-- **New client/server signatures** — User-Agent patterns for emerging local LLM clients
-- **Testing on other FortiOS versions** — confirmation of compatibility on 7.4.x, 7.2.x, etc.
-- **False positive reports** — particularly for `Model.Command` which uses a generic pattern
-
-When submitting a new signature, please include:
-- The F-SBID syntax
-- The model naming pattern you observed (e.g. example model identifiers from HuggingFace)
-- The FortiOS version it was tested on
-- Confirmation that it saved without error (`show application custom`)
+Quick summary: fork the repo, make your changes on a branch, open a Pull Request. All PRs require review before merging to `main`. Use the Issue templates for signature requests, false positive reports, and compatibility reports.
 
 ---
 

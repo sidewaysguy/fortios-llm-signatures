@@ -1,0 +1,49 @@
+name: False Positive Report
+description: Report a signature that is matching traffic it shouldn't
+title: "[False Positive] "
+labels: ["false-positive"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to report a signature that is incorrectly matching traffic. Please do not include any sensitive information about your network or users.
+
+  - type: input
+    id: signature-name
+    attributes:
+      label: Signature name
+      description: Which signature is firing incorrectly?
+      placeholder: Model.Command
+    validations:
+      required: true
+
+  - type: input
+    id: fortios-version
+    attributes:
+      label: FortiOS version
+      placeholder: "7.6.6"
+    validations:
+      required: true
+
+  - type: textarea
+    id: traffic-description
+    attributes:
+      label: What traffic is triggering the false positive?
+      description: Describe the application or traffic type that is incorrectly matching. Do not include usernames, IPs, or sensitive data.
+      placeholder: |
+        e.g. Our internal build system makes HTTP POST requests to an internal API that happens to include the word "command" in the request body. These are being matched by Model.Command.
+    validations:
+      required: true
+
+  - type: textarea
+    id: log-sample
+    attributes:
+      label: Relevant log fields
+      description: Paste relevant fields from the FortiOS application control log (sanitize any sensitive data — replace IPs with 10.x.x.x etc.)
+      render: text
+
+  - type: textarea
+    id: suggested-fix
+    attributes:
+      label: Suggested fix
+      description: If you have a suggestion for how to make the pattern more specific to reduce false positives, describe it here.

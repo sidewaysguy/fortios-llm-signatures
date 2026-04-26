@@ -1,0 +1,62 @@
+name: New Signature Request
+description: Request a new signature for a model family, fine-tuner, or client tool
+title: "[Signature Request] "
+labels: ["signature-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to request a new signature. If you're able to write and test the signature yourself, please submit a Pull Request instead — it will be reviewed faster.
+
+  - type: input
+    id: signature-name
+    attributes:
+      label: Suggested signature name
+      description: Use dot notation e.g. Model.Qwen or Client.OpenWebUI
+      placeholder: Model.ExampleName
+    validations:
+      required: true
+
+  - type: dropdown
+    id: signature-type
+    attributes:
+      label: Signature type
+      options:
+        - Base model family
+        - Fine-tune organization
+        - Inference server (infrastructure)
+        - Client tool
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: model-examples
+    attributes:
+      label: Model identifier examples
+      description: Paste real model identifier strings that this signature should match (from HuggingFace, LM Studio catalog, etc.)
+      placeholder: |
+        example-model-name-7b
+        example-model-name-13b-instruct
+    validations:
+      required: true
+
+  - type: input
+    id: source-url
+    attributes:
+      label: Source / reference URL
+      description: Link to the HuggingFace org, model card, or vendor page
+      placeholder: https://huggingface.co/ExampleOrg
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Why is this model family / tool worth adding? How commonly is it deployed locally?
+
+  - type: input
+    id: fortios-version
+    attributes:
+      label: Your FortiOS version
+      description: If you have tested or are willing to test, which version are you running?
+      placeholder: "7.6.6"

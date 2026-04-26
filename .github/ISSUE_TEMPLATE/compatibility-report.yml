@@ -1,0 +1,53 @@
+name: FortiOS Compatibility Report
+description: Report whether these signatures work (or don't) on a FortiOS version other than 7.6.6
+title: "[Compatibility] FortiOS "
+labels: ["compatibility"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help expand the tested version matrix by reporting your experience with FortiOS versions other than 7.6.6.
+
+  - type: input
+    id: fortios-version
+    attributes:
+      label: FortiOS version
+      placeholder: "7.4.4"
+    validations:
+      required: true
+
+  - type: input
+    id: hardware
+    attributes:
+      label: Hardware platform
+      description: FortiGate model or VM type
+      placeholder: "FortiGate 100F / FortiGate-VM"
+
+  - type: dropdown
+    id: result
+    attributes:
+      label: Overall result
+      options:
+        - All signatures saved and matched correctly
+        - Most signatures worked — some issues (describe below)
+        - Signatures saved but did not match traffic
+        - Signatures failed to save
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Which signatures had issues? What error messages did you see? What traffic did you test with?
+
+  - type: dropdown
+    id: category-36
+    attributes:
+      label: Was Category 36 (GenAI) available on your version?
+      options:
+        - "Yes"
+        - "No — I used a different category"
+        - "Not sure"
+    validations:
+      required: true

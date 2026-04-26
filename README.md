@@ -159,7 +159,27 @@ show application custom
 show application custom | grep "edit\|appid"
 ```
 
-**4. Add to your Application Control profile:**
+**4. Add signatures to your Application Control profile:**
+
+This step is required — signatures saved to the FortiGate but not added to an Application Control profile will not match any traffic.
+
+**GUI method (recommended):**
+
+Go to **Security Profiles → Application Control** and open or create your profile. Under **Application and Filter Overrides**, click **Create New** and set:
+- Type: **Application**
+- Application: search for and select your custom signature (e.g. `LM.Studio.Native.API`)
+- Action: **Monitor** (start here before enforcing)
+
+Repeat for each signature. Multi-select is supported — you can select multiple signatures in a single override entry to apply the same action to a group. Application and Filter Overrides operate at the per-application level; the GenAI category is already present in the global Application Control settings and does not need to be added as an override separately.
+
+**CLI method:**
+
+First retrieve the auto-assigned appids:
+```
+show application custom
+```
+
+Then add each signature to your profile:
 ```
 config application list
   edit "your-profile-name"
@@ -179,7 +199,19 @@ end
 ```
 Log & Report > Security Events > Application Control
 ```
-Start with `action monitor`. Once matching is confirmed, promote individual signatures to `action block` as appropriate for your environment.
+Start with `action monitor`. Once matching is confirmed, promote individual signatures to `action block` as appropriate for your environment. `Model.Dolphin` is recommended as the first signature to enforce.
+
+---
+
+## Network Architecture Considerations
+
+### Layer 2 Traffic and Micro-Segmentation
+
+These signatures only inspect traffic that passes through the FortiGate at layer 3. If the LM Studio server and the client making requests are on the **same subnet**, their traffic will not cross a layer 3 boundary and will therefore bypass the FortiGate entirely — the signatures will not fire.
+
+To enforce application control on same-subnet LLM traffic, **micro-segmentation** is required. This involves placing the LM Studio server (or other inference server) on a dedicated VLAN or subnet that routes through the FortiGate, ensuring all client traffic must cross a layer 3 boundary to reach it regardless of where the client is located.
+
+This is an important architectural consideration in environments where users may run local inference servers on workstations that sit on the same network segment as other users connecting to them.
 
 ---
 

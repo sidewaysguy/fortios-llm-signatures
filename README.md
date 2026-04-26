@@ -38,13 +38,13 @@ These signatures **complement** — they do not replace — FortiGuard signature
 | AnythingLLM | Current (April 2026) |
 | SSL Inspection | Deep inspection profile |
 
-> **Compatibility note:** These signatures use standard F-SBID syntax and `config application custom`, which has been available since FortiOS 6.x. They should work on FortiOS 7.4+ however they have only been tested and confirmed working on 7.6.6. Category 36 (GenAI) is required and was introduced in FortiOS 7.4. If you are running an earlier version, update the category to the most appropriate available option.
+> **Compatibility note:** These signatures use standard F-SBID syntax and `config application custom`, which has been available since FortiOS 6.x. Category 36 (GenAI) is required and was introduced in FortiOS 7.6.4. These signatures have been tested and confirmed working on FortiOS 7.6.6. If you are running FortiOS 7.6.3 or earlier, Category 36 will not be available and you should substitute the most appropriate available category.
 
 ---
 
 ## Requirements
 
-- FortiOS 7.4 or later (for Category 36 GenAI)
+- FortiOS 7.6.4 or later (Category 36 GenAI was introduced in 7.6.4)
 - Application Control license / FortiGuard subscription
 - **Deep Packet Inspection** (SSL inspection profile) applied to the firewall policy for HTTPS traffic
 - Application Control profile applied to relevant firewall policies

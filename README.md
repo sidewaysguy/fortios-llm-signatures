@@ -33,7 +33,7 @@ These signatures **complement** — they do not replace — FortiGuard signature
 | Component | Version |
 |-----------|---------|
 | FortiOS | 7.6.6 |
-| FortiGate hardware | FSFADOM3 |
+| FortiGate hardware | FortiGate-121G |
 | LM Studio | 0.4.x |
 | AnythingLLM | Current (April 2026) |
 | SSL Inspection | Deep inspection profile |

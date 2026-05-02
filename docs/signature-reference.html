@@ -123,8 +123,8 @@
   <h1>Local LLM Signature Library</h1>
   <p class="subtitle">Complete F-SBID custom application signature reference for identifying local and network-hosted LLM infrastructure, client tooling, base model families, and fine-tune organizations. Covers OpenAI-compatible and Anthropic-compatible API formats.</p>
   <div class="stat-grid">
-    <div class="stat-card"><span class="stat-num">35</span><span class="stat-label">Total Sigs</span></div>
-    <div class="stat-card"><span class="stat-num">8</span><span class="stat-label">Infra</span></div>
+    <div class="stat-card"><span class="stat-num">36</span><span class="stat-label">Total Sigs</span></div>
+    <div class="stat-card"><span class="stat-num">9</span><span class="stat-label">Infra</span></div>
     <div class="stat-card"><span class="stat-num">18</span><span class="stat-label">Base Models</span></div>
     <div class="stat-card"><span class="stat-num">9</span><span class="stat-label">Fine-Tuners</span></div>
     <div class="stat-card"><span class="stat-num">2</span><span class="stat-label">API Formats</span></div>
@@ -142,7 +142,8 @@
   <table>
     <thead><tr><th>#</th><th>Signature Name</th><th>Category</th><th>Match Field</th><th>Pattern</th><th>Weight</th><th>Purpose</th></tr></thead>
     <tbody>
-      <tr><td class="dim">01</td><td class="mono bright">LM.Studio.Native.API</td><td><span class="pill type-infra">Infra</span></td><td class="dim">URI</td><td class="mono purple">/api/v</td><td><span class="pill w50">50</span></td><td class="dim">LM Studio native REST API</td></tr>
+      <tr><td class="dim">01</td><td class="mono bright">LM.Studio.Native.API</td><td><span class="pill type-infra">Infra</span></td><td class="dim">URI</td><td class="mono purple">/api/v0/</td><td><span class="pill w50">50</span></td><td class="dim">LM Studio native REST API v0 — unique, no cloud overlap</td></tr>
+      <tr><td class="dim">01b</td><td class="mono bright">LM.Studio.Native.APIv1</td><td><span class="pill type-infra">Infra</span></td><td class="dim">URI+Header</td><td class="mono purple">/api/v1/ + node</td><td><span class="pill w50">50</span></td><td class="dim">LM Studio native REST API v1 — anchored by node User-Agent</td></tr>
       <tr><td class="dim">02</td><td class="mono bright">AnythingLLM.API</td><td><span class="pill type-infra">Infra</span></td><td class="dim">URI</td><td class="mono purple">/api/v1/workspace</td><td><span class="pill w50">50</span></td><td class="dim">AnythingLLM server endpoint</td></tr>
       <tr><td class="dim">03</td><td class="mono bright">Local.LLM.OpenAI.Compat</td><td><span class="pill type-infra">Infra</span></td><td class="dim">URI</td><td class="mono purple">/v1/chat/completions</td><td><span class="pill w30">30</span></td><td class="dim">Any OpenAI-format local LLM server</td></tr>
       <tr><td class="dim">04</td><td class="mono bright">AnythingLLM.OpenAI.SDK</td><td><span class="pill type-client">Client</span></td><td class="dim">Header</td><td class="mono blue">OpenAI/JS</td><td><span class="pill w60">60</span></td><td class="dim">AnythingLLM via OpenAI JS SDK</td></tr>
@@ -254,8 +255,18 @@
     <span class="kw">set</span> <span class="opt">behavior</span> <span class="val">9</span>
     <span class="kw">set</span> <span class="opt">vendor</span> <span class="val">0</span>
     <span class="kw">set</span> <span class="opt">protocol</span> <span class="str">"TCP"</span>
-    <span class="kw">set</span> <span class="opt">comment</span> <span class="str">"LM Studio native REST API - /api/v0 and /api/v1 paths unique to LM Studio"</span>
-    <span class="kw">set</span> <span class="opt">signature</span> <span class="sig">"F-SBID( --name \"LM.Studio.Native.API\"; --service HTTP; --protocol tcp; --flow from_client; --pattern \"/api/v\"; --no_case; --context uri; --weight 50;)"</span>
+    <span class="kw">set</span> <span class="opt">comment</span> <span class="str">"LM Studio native REST API v0 path - /api/v0/ is unique to LM Studio, confirmed no overlap with cloud AI services"</span>
+    <span class="kw">set</span> <span class="opt">signature</span> <span class="sig">"F-SBID( --name \"LM.Studio.Native.API\"; --service HTTP; --protocol tcp; --flow from_client; --pattern \"/api/v0/\"; --no_case; --context uri; --weight 50;)"</span>
+  <span class="kw">next</span>
+
+  <span class="kw">edit</span> <span class="str">"LM.Studio.Native.APIv1"</span>
+    <span class="kw">set</span> <span class="opt">category</span> <span class="val">36</span>
+    <span class="kw">set</span> <span class="opt">technology</span> <span class="val">2</span>
+    <span class="kw">set</span> <span class="opt">behavior</span> <span class="val">9</span>
+    <span class="kw">set</span> <span class="opt">vendor</span> <span class="val">0</span>
+    <span class="kw">set</span> <span class="opt">protocol</span> <span class="str">"TCP"</span>
+    <span class="kw">set</span> <span class="opt">comment</span> <span class="str">"LM Studio native REST API v1 path - URI + node User-Agent distinguishes from cloud services. False positive confirmed on chat.qwen.ai."</span>
+    <span class="kw">set</span> <span class="opt">signature</span> <span class="sig">"F-SBID( --name \"LM.Studio.Native.APIv1\"; --service HTTP; --protocol tcp; --flow from_client; --pattern \"/api/v1/\"; --no_case; --context uri; --pattern \"node\"; --no_case; --context header; --weight 50;)"</span>
   <span class="kw">next</span>
 
   <span class="kw">edit</span> <span class="str">"AnythingLLM.API"</span>

@@ -3,7 +3,7 @@
 > Custom F-SBID application control signatures for identifying local and network-hosted Large Language Model infrastructure on FortiOS.
 
 [![FortiOS](https://img.shields.io/badge/FortiOS-7.6.6-red?style=flat-square)](https://docs.fortinet.com/product/fortigate/7.6)
-[![Signatures](https://img.shields.io/badge/Signatures-35-blue?style=flat-square)](#signature-index)
+[![Signatures](https://img.shields.io/badge/Signatures-36-blue?style=flat-square)](#signature-index)
 [![Category](https://img.shields.io/badge/Category-36%20GenAI-green?style=flat-square)](#requirements)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
@@ -59,7 +59,8 @@ Matches on URI path and User-Agent header. These fire regardless of which model 
 
 | # | Signature Name | Matches On | What It Detects |
 |---|----------------|-----------|-----------------|
-| 01 | `LM.Studio.Native.API` | URI `/api/v` | LM Studio native REST API |
+| 01 | `LM.Studio.Native.API` | URI `/api/v0/` | LM Studio native REST API v0 (unique — no cloud service uses v0 versioning) |
+| 01b | `LM.Studio.Native.APIv1` | URI `/api/v1/` + Header `node` | LM Studio native REST API v1 (anchored by User-Agent to prevent false positives) |
 | 02 | `AnythingLLM.API` | URI `/api/v1/workspace` | AnythingLLM server |
 | 03 | `Local.LLM.OpenAI.Compat` | URI `/v1/chat/completions` | Any OpenAI-compatible local server |
 | 04 | `AnythingLLM.OpenAI.SDK` | Header `OpenAI/JS` | AnythingLLM client via JS SDK |
@@ -67,6 +68,8 @@ Matches on URI path and User-Agent header. These fire regardless of which model 
 | 06 | `LM.Studio.Anthropic.API` | URI + Header | LM Studio Anthropic endpoint (Claude Code path) |
 | 07 | `Client.ClaudeCode` | Header `claude-cli` | Claude Code CLI — local or cloud |
 | 08 | `Client.OpenAI.Python.SDK` | Header `AsyncOpenAI/Python` | Python openai SDK scripted access |
+
+> **False positive note (v1.0.1):** The original `/api/v` pattern produced confirmed false positives on `chat.qwen.ai`, which uses `/api/v1/` and `/api/v2/` paths in its web frontend. The `/api/v0/` path is unique to LM Studio. The v1 path is anchored with the `node` User-Agent which LM Studio always sends and cloud service browsers never send.
 
 ### Base Model Families (09–26)
 

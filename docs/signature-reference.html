@@ -98,7 +98,7 @@
   <a href="#overview">Summary &amp; Index</a>
   <a href="#weight-hierarchy">Weight Hierarchy</a>
   <a href="#alerts">Important Notes</a>
-  <div class="nav-section-label">Infrastructure <span class="nav-count">8</span></div>
+  <div class="nav-section-label">Infrastructure <span class="nav-count">9</span></div>
   <a href="#infra-openai">OpenAI-Format (01–04)</a>
   <a href="#infra-anthropic">Anthropic-Format (05–08)</a>
   <div class="nav-section-label">Base Models <span class="nav-count">18</span></div>
@@ -110,6 +110,7 @@
   <a href="#coverage">Coverage Matrix</a>
   <a href="#fortiguard">FortiGuard Integration</a>
   <a href="#architecture">Network Architecture</a>
+  <a href="#versioning">Versioning &amp; Updates</a>
 </nav>
 
 <div class="main">
@@ -118,7 +119,7 @@
     <span class="badge badge-orange">FortiOS 7.6.6</span>
     <span class="badge badge-blue">config application custom</span>
     <span class="badge badge-green">Category 36 — GenAI</span>
-    <span class="badge badge-blue">v1.0.0</span>
+    <span class="badge badge-blue">v1.0.1</span>
   </div>
   <h1>Local LLM Signature Library</h1>
   <p class="subtitle">Complete F-SBID custom application signature reference for identifying local and network-hosted LLM infrastructure, client tooling, base model families, and fine-tune organizations. Covers OpenAI-compatible and Anthropic-compatible API formats.</p>
@@ -736,8 +737,57 @@ execute log display</pre>
   <p style="font-size:12px;color:var(--text-dim);margin-top:8px;">Localhost traffic (where both the inference server and the client run on the same machine) is never visible to the FortiGate and requires endpoint-level controls rather than network-level inspection.</p>
 </section>
 
+<!-- SECTION 11: VERSIONING -->
+<span class="section-anchor" id="versioning"></span>
+<section>
+  <div class="section-header"><span class="section-num">§11</span><h2>Versioning &amp; Update Strategy</h2></div>
+
+  <h3>Version History</h3>
+  <table>
+    <thead><tr><th>Version</th><th>Date</th><th>Summary</th></tr></thead>
+    <tbody>
+      <tr><td class="mono bright">v1.0.1</td><td class="dim">2026-05-02</td><td>Fixed <code>LM.Studio.Native.API</code> false positive on cloud AI web frontends (chat.qwen.ai confirmed). Split into <code>LM.Studio.Native.API</code> (v0 path, unique) and <code>LM.Studio.Native.APIv1</code> (v1 path + node User-Agent). Total: 36 signatures.</td></tr>
+      <tr><td class="mono bright">v1.0.0</td><td class="dim">2026-04-26</td><td>Initial release. 35 signatures covering infrastructure, base model families, and fine-tune organizations across OpenAI-compatible and Anthropic-compatible API formats.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>When to Update This Library</h3>
+  <p style="font-size:13px;color:var(--text);margin-bottom:16px;">The LLM ecosystem moves quickly. The following events should trigger a review and potential update of these signatures:</p>
+  <table>
+    <thead><tr><th>Trigger</th><th>Action</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td class="bright">New model family released</td><td class="dim">Add base model signature (weight 60) if model name is distinct and likely to be deployed locally</td><td class="green">Medium</td></tr>
+      <tr><td class="bright">New fine-tune organization emerges</td><td class="dim">Add fine-tuner signature (weight 62) if org has a consistent naming pattern across their catalog</td><td class="green">Medium</td></tr>
+      <tr><td class="bright">False positive confirmed in logs</td><td class="dim">Tighten the pattern or add a secondary discriminator (URI + header combination). Document in CHANGELOG.</td><td class="red">High</td></tr>
+      <tr><td class="bright">New local inference server released</td><td class="dim">Check URI paths and User-Agent strings; add infrastructure signature if unique patterns exist</td><td class="green">Medium</td></tr>
+      <tr><td class="bright">New LLM client tool released</td><td class="dim">Check User-Agent header; add client identification signature if string is stable and distinctive</td><td class="green">Medium</td></tr>
+      <tr><td class="bright">LM Studio version update</td><td class="dim">Verify <code>/api/v0/</code> and <code>/api/v1/</code> paths still apply; check for new API versions introduced</td><td class="yellow">Periodic</td></tr>
+      <tr><td class="bright">FortiGuard signature update</td><td class="dim">Re-test cloud AI web frontends to verify no new false positives introduced by FortiGuard changes</td><td class="yellow">Periodic</td></tr>
+      <tr><td class="bright">FortiOS upgrade</td><td class="dim">Re-verify all signatures save correctly and Category 36 remains available on the new version</td><td class="yellow">On upgrade</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Recommended Review Sources</h3>
+  <div class="alert alert-blue">
+    <span class="alert-icon">ℹ</span>
+    <div>Monitor these sources to identify when new signatures may be needed: <strong><a href="https://lmstudio.ai/models" style="color:var(--accent2);">lmstudio.ai/models</a></strong> for new model additions to the LM Studio catalog, <strong><a href="https://huggingface.co/models" style="color:var(--accent2);">huggingface.co/models</a></strong> sorted by downloads for trending locally-deployable models, and the <strong><a href="https://github.com/sidewaysguy/fortios-llm-signatures" style="color:var(--accent2);">GitHub repository</a></strong> Issues for community-reported false positives and signature requests.</div>
+  </div>
+
+  <h3>Versioning Convention</h3>
+  <p style="font-size:13px;color:var(--text);margin-bottom:12px;">This library follows semantic versioning:</p>
+  <table>
+    <thead><tr><th>Version Type</th><th>When Used</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td class="bright">Patch (x.x.<span class="green">N</span>)</td><td class="dim">Bug fixes, false positive corrections, comment updates</td><td class="mono">1.0.0 → 1.0.1</td></tr>
+      <tr><td class="bright">Minor (x.<span class="green">N</span>.0)</td><td class="dim">New signatures added, no breaking changes</td><td class="mono">1.0.x → 1.1.0</td></tr>
+      <tr><td class="bright">Major (<span class="green">N</span>.0.0)</td><td class="dim">Signatures removed, renamed, or weights significantly restructured</td><td class="mono">1.x.x → 2.0.0</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--text-dim);margin-top:8px;">When updating to a new version, always check the CHANGELOG for any signatures that have been removed or renamed before pasting new CLI blocks, as the FortiGate will error if you attempt to set a pattern on an existing signature without first deleting it.</p>
+</section>
+
 <footer>
-  <span>FortiOS 7.6.6 · config application custom · 35 signatures · v1.0.0</span>
+  <span>FortiOS 7.6.6 · config application custom · 36 signatures · v1.0.1</span>
   <span>Generated 2026-04-26 · github.com/sidewaysguy/fortios-llm-signatures</span>
 </footer>
 </div>

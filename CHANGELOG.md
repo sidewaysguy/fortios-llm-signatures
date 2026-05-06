@@ -6,6 +6,46 @@ Format: `[version] YYYY-MM-DD — description`
 
 ---
 
+## [1.1.0] 2026-05-06
+
+### Added — Client.CherryStudio signature
+
+Traffic analysis comparing AnythingLLM and Cherry Studio clients connecting to the same Qwen model hosted on LM Studio confirmed Cherry Studio has a highly distinctive Electron-based User-Agent:
+
+```
+Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) CherryStudio/1.9.4 Chrome/146.0.7680.188 Electron/41.2.1 Safari/537.36
+```
+
+Without a dedicated signature, Cherry Studio was identified as:
+- `HTTP.BROWSER_Chrome` (Web.Client category) for `/v1/models` calls — incorrect category
+- `Local.LLM.OpenAI.Compat` (catch-all) for `/v1/chat/completions` calls — not client-identified
+
+The new `Client.CherryStudio` signature matches the `CherryStudio` token in the User-Agent header at weight 55, consistent with other client identification signatures. This correctly identifies Cherry Studio sessions across all URI paths regardless of which inference server it connects to.
+
+**Total signature count: 37** (was 36)
+
+**Tested on FortiOS 7.6.6** — CherryStudio/1.9.4 connecting to LM Studio Qwen model, confirmed 2026-05-04.
+
+### Fixed — Model.Command false positive confirmed and resolved
+
+Log analysis confirmed that `Model.Command` fires simultaneously with `Model.Qwen` during AnythingLLM sessions (both at 15:53:09 and 16:20:43). The Qwen model being queried does not have "command" in its model name — the pattern was matching the word "command" appearing in the **prompt or message content** rather than in the `"model"` field of the POST body.
+
+**Fix:** Pattern changed from `command` to `command-r`. All Cohere Command models available for local inference use this string in their names (`command-r`, `command-r-plus`, `command-r7b`). The hyphenated form is highly unlikely to appear in natural language chat content, making it a reliable discriminator.
+
+If you deployed `Model.Command` from a prior release, re-apply the updated signature from `signatures/02-base-models.conf` or `signatures/00-all-signatures.conf`.
+
+**Tested on FortiOS 7.6.6** — false positive reproduced with old pattern, confirmed absent with `command-r` pattern, 2026-05-06.
+
+### Fixed — AnythingLLM.OpenAI.SDK weight corrected to 55
+
+`AnythingLLM.OpenAI.SDK` was incorrectly set to weight 60 — the same weight as base model signatures. When both signatures matched the same flow (e.g., AnythingLLM sending a POST to `/v1/chat/completions` with a recognised model), FortiOS logged the model signature and suppressed the client signature, making AnythingLLM invisible in the application control logs whenever a model was identified.
+
+**Fix:** Weight lowered from 60 to 55, consistent with all other client identification signatures (`Client.ClaudeCode`, `Client.CherryStudio` — both weight 55). The intended behaviour is now correct: model signatures (60) win for identified-model sessions; `AnythingLLM.OpenAI.SDK` appears only when no model signature fires (unrecognized model), and wins over the OpenAI-compat catch-all (weight 30).
+
+If you deployed `AnythingLLM.OpenAI.SDK` from a prior release, re-apply the updated signature from `signatures/01-infrastructure.conf` or `signatures/00-all-signatures.conf`.
+
+---
+
 ## [1.0.1] 2026-05-02
 
 ### Fixed — False positive on LM.Studio.Native.API
@@ -90,4 +130,3 @@ Format: `[version] YYYY-MM-DD — description`
 - Monitor for new model families on lmstudio.ai/models and huggingface.co/models
 - Add per-model signatures for additional fine-tune organizations as ecosystem grows
 - Consider Ollama-specific URI signatures to complement FortiGuard native Ollama signature
-- Review `Model.Command` for false positive rate in production — "command" is a generic term

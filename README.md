@@ -3,7 +3,7 @@
 > Custom F-SBID application control signatures for identifying local and network-hosted Large Language Model infrastructure on FortiOS.
 
 [![FortiOS](https://img.shields.io/badge/FortiOS-7.6.6-red?style=flat-square)](https://docs.fortinet.com/product/fortigate/7.6)
-[![Signatures](https://img.shields.io/badge/Signatures-36-blue?style=flat-square)](#signature-index)
+[![Signatures](https://img.shields.io/badge/Signatures-37-blue?style=flat-square)](#signature-index)
 [![Category](https://img.shields.io/badge/Category-36%20GenAI-green?style=flat-square)](#requirements)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
@@ -51,7 +51,7 @@ These signatures **complement** — they do not replace — FortiGuard signature
 
 ---
 
-## Signature Library — 35 Signatures
+## Signature Library — 37 Signatures
 
 ### Infrastructure & Client Identification (01–08)
 
@@ -68,6 +68,7 @@ Matches on URI path and User-Agent header. These fire regardless of which model 
 | 06 | `LM.Studio.Anthropic.API` | URI + Header | LM Studio Anthropic endpoint (Claude Code path) |
 | 07 | `Client.ClaudeCode` | Header `claude-cli` | Claude Code CLI — local or cloud |
 | 08 | `Client.OpenAI.Python.SDK` | Header `AsyncOpenAI/Python` | Python openai SDK scripted access |
+| 09 | `Client.CherryStudio` | Header `CherryStudio` | Cherry Studio Electron client |
 
 > **False positive note (v1.0.1):** The original `/api/v` pattern produced confirmed false positives on `chat.qwen.ai`, which uses `/api/v1/` and `/api/v2/` paths in its web frontend. The `/api/v0/` path is unique to LM Studio. The v1 path is anchored with the `node` User-Agent which LM Studio always sends and cloud service browsers never send.
 
@@ -92,7 +93,7 @@ Matches on `/v1/chat/completions` URI + model name in the HTTP POST body. Requir
 | 21 | `Model.Ernie` | `ernie` | Baidu |
 | 22 | `Model.MiniMax` | `minimax` | MiniMax |
 | 23 | `Model.Falcon` | `falcon` | TII |
-| 24 | `Model.Command` | `command` | Cohere (monitor for false positives) |
+| 24 | `Model.Command` | `command-r` | Cohere |
 | 25 | `Model.InternLM` | `internlm` | Shanghai AI Lab |
 | 26 | `Model.Solar` | `solar` | Upstage |
 

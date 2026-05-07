@@ -6,6 +6,20 @@ Format: `[version] YYYY-MM-DD — description`
 
 ---
 
+## [1.3.0] 2026-05-06
+
+### Added — Model.Kimi signature (sig 27)
+
+Moonshot AI's Kimi model family (K2, K2.5, K2.6) is a series of large open-weight models available in GGUF format and actively being run locally via llama.cpp. Model identifiers use the `Kimi-` prefix consistently across all versions (`Kimi-K2-Thinking`, `Kimi-K2.5`, `Kimi-K2-Instruct-0905`).
+
+Pattern `kimi` is distinctive — it does not appear in normal conversation content and uniquely identifies this model family. Weight 60, consistent with all other base model signatures.
+
+Fine-tune organization signatures renumbered from 27–35 to 28–36 to accommodate the new base model entry.
+
+**Total signature count: 39** (was 38)
+
+---
+
 ## [1.2.0] 2026-05-06
 
 ### Added — AnythingLLM.NativeAPI signature (sig 04b)

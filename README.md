@@ -3,7 +3,7 @@
 > Custom F-SBID application control signatures for identifying local and network-hosted Large Language Model infrastructure on FortiOS.
 
 [![FortiOS](https://img.shields.io/badge/FortiOS-7.6.6-red?style=flat-square)](https://docs.fortinet.com/product/fortigate/7.6)
-[![Signatures](https://img.shields.io/badge/Signatures-38-blue?style=flat-square)](#signature-index)
+[![Signatures](https://img.shields.io/badge/Signatures-39-blue?style=flat-square)](#signature-index)
 [![Category](https://img.shields.io/badge/Category-36%20GenAI-green?style=flat-square)](#requirements)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
@@ -51,7 +51,7 @@ These signatures **complement** — they do not replace — FortiGuard signature
 
 ---
 
-## Signature Library — 38 Signatures
+## Signature Library — 39 Signatures
 
 ### Infrastructure & Client Identification (01–09)
 
@@ -73,7 +73,7 @@ Matches on URI path and User-Agent header. These fire regardless of which model 
 
 > **False positive note (v1.0.1 / v1.2.0):** The original `/api/v` pattern produced confirmed false positives on `chat.qwen.ai`, which uses `/api/v1/` and `/api/v2/` paths in its web frontend. `LM.Studio.Native.APIv1` anchors the v1 path with `node` User-Agent (browsers never send this). `AnythingLLM.NativeAPI` (sig 04b) uses a triple condition — `/api/v` URI + `node` UA + `sec-fetch-mode` — that further distinguishes AnythingLLM's Node.js 18+ native fetch calls from both browser requests and LM Studio's own http-module polling.
 
-### Base Model Families (09–26)
+### Base Model Families (09–27)
 
 Matches on `/v1/chat/completions` URI + model name in the HTTP POST body. Requires DPI.
 
@@ -97,22 +97,23 @@ Matches on `/v1/chat/completions` URI + model name in the HTTP POST body. Requir
 | 24 | `Model.Command` | `command-r` | Cohere |
 | 25 | `Model.InternLM` | `internlm` | Shanghai AI Lab |
 | 26 | `Model.Solar` | `solar-` | Upstage |
+| 27 | `Model.Kimi` | `kimi` | Moonshot AI |
 
-### Fine-Tune Organizations (27–35)
+### Fine-Tune Organizations (28–36)
 
 Matches fine-tuned model variants by organization. Weight 62 ensures these outrank base model signatures — a `nous-hermes-2-llama-3.1-8b` will correctly identify as `Model.Hermes`, not `Model.Llama`.
 
 | # | Signature Name | Pattern | Organization | Notes |
 |---|----------------|---------|-------------|-------|
-| 27 | `Model.Hermes` | `hermes` | NousResearch | Hermes 2/3/4, OpenHermes |
-| 28 | `Model.Dolphin` | `dolphin` | Eric Hartford | ⚠️ **UNCENSORED** — see security note |
-| 29 | `Model.Zephyr` | `zephyr` | HuggingFace H4 | DPO fine-tunes |
-| 30 | `Model.OpenChat` | `openchat` | OpenChat Project | |
-| 31 | `Model.Wizard` | `wizard` | Microsoft Research | WizardLM, WizardCoder, WizardMath |
-| 32 | `Model.Vicuna` | `vicuna` | UC Berkeley LMSYS | |
-| 33 | `Model.Orca` | `orca` | Microsoft + Community | Orca-2, OpenOrca |
-| 34 | `Model.Airoboros` | `airoboros` | jondurbin | Creative/roleplay focus |
-| 35 | `Model.Phind` | `phind` | Phind | Code-specialized |
+| 28 | `Model.Hermes` | `hermes` | NousResearch | Hermes 2/3/4, OpenHermes |
+| 29 | `Model.Dolphin` | `dolphin` | Eric Hartford | ⚠️ **UNCENSORED** — see security note |
+| 30 | `Model.Zephyr` | `zephyr` | HuggingFace H4 | DPO fine-tunes |
+| 31 | `Model.OpenChat` | `openchat` | OpenChat Project | |
+| 32 | `Model.Wizard` | `wizard` | Microsoft Research | WizardLM, WizardCoder, WizardMath |
+| 33 | `Model.Vicuna` | `vicuna` | UC Berkeley LMSYS | |
+| 34 | `Model.Orca` | `orca` | Microsoft + Community | Orca-2, OpenOrca |
+| 35 | `Model.Airoboros` | `airoboros` | jondurbin | Creative/roleplay focus |
+| 36 | `Model.Phind` | `phind` | Phind | Code-specialized |
 
 ---
 

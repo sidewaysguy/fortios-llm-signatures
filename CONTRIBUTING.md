@@ -33,7 +33,7 @@ Community fine-tuners with a distinct model naming pattern across their model ca
 New local LLM servers or client tools with identifiable URI paths or User-Agent strings.
 
 ### False positive reports
-If a signature is firing on traffic it shouldn't — especially `Model.Command` which uses a generic pattern — please report it via an Issue so we can investigate.
+If a signature is firing on traffic it shouldn't, please report it via an Issue so we can investigate.
 
 ### Testing on other FortiOS versions
 Confirmation (or failure reports) of these signatures on FortiOS versions other than 7.6.6. Include your FortiOS version, hardware platform, and whether signatures saved and matched correctly.

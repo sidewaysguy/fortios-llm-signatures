@@ -3,7 +3,7 @@
 > Custom F-SBID application control signatures for identifying local and network-hosted Large Language Model infrastructure on FortiOS.
 
 [![FortiOS](https://img.shields.io/badge/FortiOS-7.6.6-red?style=flat-square)](https://docs.fortinet.com/product/fortigate/7.6)
-[![Signatures](https://img.shields.io/badge/Signatures-37-blue?style=flat-square)](#signature-index)
+[![Signatures](https://img.shields.io/badge/Signatures-38-blue?style=flat-square)](#signature-index)
 [![Category](https://img.shields.io/badge/Category-36%20GenAI-green?style=flat-square)](#requirements)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
@@ -51,9 +51,9 @@ These signatures **complement** — they do not replace — FortiGuard signature
 
 ---
 
-## Signature Library — 37 Signatures
+## Signature Library — 38 Signatures
 
-### Infrastructure & Client Identification (01–08)
+### Infrastructure & Client Identification (01–09)
 
 Matches on URI path and User-Agent header. These fire regardless of which model is loaded.
 
@@ -63,14 +63,15 @@ Matches on URI path and User-Agent header. These fire regardless of which model 
 | 01b | `LM.Studio.Native.APIv1` | URI `/api/v1/` + Header `node` | LM Studio native REST API v1 (anchored by User-Agent to prevent false positives) |
 | 02 | `AnythingLLM.API` | URI `/api/v1/workspace` | AnythingLLM server |
 | 03 | `Local.LLM.OpenAI.Compat` | URI `/v1/chat/completions` | Any OpenAI-compatible local server |
-| 04 | `AnythingLLM.OpenAI.SDK` | Header `OpenAI/JS` | AnythingLLM client via JS SDK |
+| 04 | `AnythingLLM.OpenAI.SDK` | Header `OpenAI/JS` | AnythingLLM client via JS SDK (chat POST flows) |
+| 04b | `AnythingLLM.NativeAPI` | URI `/api/v` + Header `node` + Header `sec-fetch-mode` | AnythingLLM model enumeration via LM Studio native API |
 | 05 | `Local.LLM.Anthropic.Compat` | URI `/v1/messages` | Any Anthropic-compatible local server |
 | 06 | `LM.Studio.Anthropic.API` | URI + Header | LM Studio Anthropic endpoint (Claude Code path) |
 | 07 | `Client.ClaudeCode` | Header `claude-cli` | Claude Code CLI — local or cloud |
 | 08 | `Client.OpenAI.Python.SDK` | Header `AsyncOpenAI/Python` | Python openai SDK scripted access |
 | 09 | `Client.CherryStudio` | Header `CherryStudio` | Cherry Studio Electron client |
 
-> **False positive note (v1.0.1):** The original `/api/v` pattern produced confirmed false positives on `chat.qwen.ai`, which uses `/api/v1/` and `/api/v2/` paths in its web frontend. The `/api/v0/` path is unique to LM Studio. The v1 path is anchored with the `node` User-Agent which LM Studio always sends and cloud service browsers never send.
+> **False positive note (v1.0.1 / v1.2.0):** The original `/api/v` pattern produced confirmed false positives on `chat.qwen.ai`, which uses `/api/v1/` and `/api/v2/` paths in its web frontend. `LM.Studio.Native.APIv1` anchors the v1 path with `node` User-Agent (browsers never send this). `AnythingLLM.NativeAPI` (sig 04b) uses a triple condition — `/api/v` URI + `node` UA + `sec-fetch-mode` — that further distinguishes AnythingLLM's Node.js 18+ native fetch calls from both browser requests and LM Studio's own http-module polling.
 
 ### Base Model Families (09–26)
 
@@ -125,6 +126,7 @@ When multiple signatures match the same session, FortiOS selects the highest wei
 62  Fine-tuner orgs   — win over base model signatures
 60  Base model families
 55  Client signatures (header-based)
+53  AnythingLLM.NativeAPI — wins over LM Studio (50) for Electron/Node.js fetch clients
 50  App/server signatures (endpoint-based)
 30  OpenAI-compat catch-all
 25  Anthropic-compat catch-all
@@ -277,7 +279,7 @@ fortios-llm-signatures/
 ├── LICENSE
 ├── signatures/
 │   ├── 00-all-signatures.conf      # Complete set — single paste
-│   ├── 01-infrastructure.conf      # Sigs 01–08
+│   ├── 01-infrastructure.conf      # Sigs 01–09 (incl. 01b, 04b)
 │   ├── 02-base-models.conf         # Sigs 09–26
 │   └── 03-fine-tuners.conf         # Sigs 27–35
 └── docs/

@@ -63,6 +63,7 @@
   .w25{background:rgba(139,148,158,.1);color:var(--text-dim);border:1px solid rgba(139,148,158,.25);}
   .w30{background:rgba(139,148,158,.12);color:#aab;border:1px solid rgba(139,148,158,.3);}
   .w50{background:rgba(188,140,255,.1);color:var(--purple);border:1px solid rgba(188,140,255,.25);}
+  .w53{background:rgba(138,152,255,.1);color:#8a98ff;border:1px solid rgba(138,152,255,.25);}
   .w55{background:rgba(88,166,255,.1);color:var(--accent2);border:1px solid rgba(88,166,255,.25);}
   .w60{background:rgba(63,185,80,.1);color:var(--green);border:1px solid rgba(63,185,80,.25);}
   .w62{background:rgba(255,166,87,.1);color:var(--orange);border:1px solid rgba(255,166,87,.25);}
@@ -119,13 +120,13 @@
     <span class="badge badge-orange">FortiOS 7.6.6</span>
     <span class="badge badge-blue">config application custom</span>
     <span class="badge badge-green">Category 36 — GenAI</span>
-    <span class="badge badge-blue">v1.1.0</span>
+    <span class="badge badge-blue">v1.2.0</span>
   </div>
   <h1>Local LLM Signature Library</h1>
   <p class="subtitle">Complete F-SBID custom application signature reference for identifying local and network-hosted LLM infrastructure, client tooling, base model families, and fine-tune organizations. Covers OpenAI-compatible and Anthropic-compatible API formats.</p>
   <div class="stat-grid">
-    <div class="stat-card"><span class="stat-num">37</span><span class="stat-label">Total Sigs</span></div>
-    <div class="stat-card"><span class="stat-num">10</span><span class="stat-label">Infra</span></div>
+    <div class="stat-card"><span class="stat-num">38</span><span class="stat-label">Total Sigs</span></div>
+    <div class="stat-card"><span class="stat-num">11</span><span class="stat-label">Infra</span></div>
     <div class="stat-card"><span class="stat-num">18</span><span class="stat-label">Base Models</span></div>
     <div class="stat-card"><span class="stat-num">9</span><span class="stat-label">Fine-Tuners</span></div>
     <div class="stat-card"><span class="stat-num">2</span><span class="stat-label">API Formats</span></div>
@@ -138,7 +139,7 @@
   <div class="section-header">
     <span class="section-num">§1</span>
     <h2>Complete Signature Index</h2>
-    <span class="section-meta">37 signatures · 4 categories</span>
+    <span class="section-meta">38 signatures · 4 categories</span>
   </div>
   <table>
     <thead><tr><th>#</th><th>Signature Name</th><th>Category</th><th>Match Field</th><th>Pattern</th><th>Weight</th><th>Purpose</th></tr></thead>
@@ -147,7 +148,8 @@
       <tr><td class="dim">01b</td><td class="mono bright">LM.Studio.Native.APIv1</td><td><span class="pill type-infra">Infra</span></td><td class="dim">URI+Header</td><td class="mono purple">/api/v1/ + node</td><td><span class="pill w50">50</span></td><td class="dim">LM Studio native REST API v1 — anchored by node User-Agent</td></tr>
       <tr><td class="dim">02</td><td class="mono bright">AnythingLLM.API</td><td><span class="pill type-infra">Infra</span></td><td class="dim">URI</td><td class="mono purple">/api/v1/workspace</td><td><span class="pill w50">50</span></td><td class="dim">AnythingLLM server endpoint</td></tr>
       <tr><td class="dim">03</td><td class="mono bright">Local.LLM.OpenAI.Compat</td><td><span class="pill type-infra">Infra</span></td><td class="dim">URI</td><td class="mono purple">/v1/chat/completions</td><td><span class="pill w30">30</span></td><td class="dim">Any OpenAI-format local LLM server</td></tr>
-      <tr><td class="dim">04</td><td class="mono bright">AnythingLLM.OpenAI.SDK</td><td><span class="pill type-client">Client</span></td><td class="dim">Header</td><td class="mono blue">OpenAI/JS</td><td><span class="pill w55">55</span></td><td class="dim">AnythingLLM via OpenAI JS SDK</td></tr>
+      <tr><td class="dim">04</td><td class="mono bright">AnythingLLM.OpenAI.SDK</td><td><span class="pill type-client">Client</span></td><td class="dim">Header</td><td class="mono blue">OpenAI/JS</td><td><span class="pill w55">55</span></td><td class="dim">AnythingLLM via OpenAI JS SDK (chat POST flows)</td></tr>
+      <tr><td class="dim">04b</td><td class="mono bright">AnythingLLM.NativeAPI</td><td><span class="pill type-client">Client</span></td><td class="dim">URI+Header×2</td><td class="mono blue">/api/v + node + sec-fetch-mode</td><td><span class="pill w53">53</span></td><td class="dim">AnythingLLM model enumeration via LM Studio native API</td></tr>
       <tr><td class="dim">05</td><td class="mono bright">Local.LLM.Anthropic.Compat</td><td><span class="pill type-infra">Infra</span></td><td class="dim">URI</td><td class="mono purple">/v1/messages</td><td><span class="pill w25">25</span></td><td class="dim">Any Anthropic-format local LLM server</td></tr>
       <tr><td class="dim">06</td><td class="mono bright">LM.Studio.Anthropic.API</td><td><span class="pill type-infra">Infra</span></td><td class="dim">URI+Header</td><td class="mono purple">/v1/messages + claude-cli</td><td><span class="pill w55">55</span></td><td class="dim">LM Studio Anthropic endpoint (Claude Code path)</td></tr>
       <tr><td class="dim">07</td><td class="mono bright">Client.ClaudeCode</td><td><span class="pill type-client">Client</span></td><td class="dim">Header</td><td class="mono blue">claude-cli</td><td><span class="pill w55">55</span></td><td class="dim">Claude Code CLI client</td></tr>
@@ -195,13 +197,14 @@
     <div class="legend-item"><span class="pill w62">62</span> Fine-tune orgs</div>
     <div class="legend-item"><span class="pill w60">60</span> Base model families</div>
     <div class="legend-item"><span class="pill w55">55</span> Client signatures</div>
+    <div class="legend-item"><span class="pill w53">53</span> AnythingLLM.NativeAPI</div>
     <div class="legend-item"><span class="pill w50">50</span> App/server signatures</div>
     <div class="legend-item"><span class="pill w30">30</span> OpenAI catch-all</div>
     <div class="legend-item"><span class="pill w25">25</span> Anthropic catch-all</div>
   </div>
   <div class="alert alert-blue">
     <span class="alert-icon">ℹ</span>
-    <div><strong>How weights interact:</strong> When multiple signatures match the same session, FortiOS selects the highest weight. Fine-tuner signatures (62) outrank base model signatures (60) — <code>nous-hermes-2-llama-3.1-8b</code> correctly identifies as <code>Model.Hermes</code>, not <code>Model.Llama</code>. Client signatures (weight 55) yield to base model signatures (weight 60) on the same flow — when a model is identified, the model wins. Client signatures appear in logs for flows where no model signature fires (e.g., an unrecognized model name). Infrastructure signatures (URI-based, weight 50 or lower) operate on distinct request types and do not compete with model signatures.</div>
+    <div><strong>How weights interact:</strong> When multiple signatures match the same session, FortiOS selects the highest weight. Fine-tuner signatures (62) outrank base model signatures (60) — <code>nous-hermes-2-llama-3.1-8b</code> correctly identifies as <code>Model.Hermes</code>, not <code>Model.Llama</code>. Client signatures (weight 55) yield to base model signatures (weight 60) on the same flow — when a model is identified, the model wins. Client signatures appear in logs for flows where no model signature fires (e.g., an unrecognized model name). <code>AnythingLLM.NativeAPI</code> (weight 53) sits between client and infrastructure sigs — it wins over <code>LM.Studio.Native.APIv1</code> (50) on model enumeration flows where AnythingLLM's Node.js fetch is the client, while LM Studio's own http-module polling (no <code>sec-fetch-mode</code>) still correctly fires at weight 50. Infrastructure signatures (URI-based, weight 50 or lower) operate on distinct request types and do not compete with model signatures.</div>
   </div>
 </section>
 
@@ -299,6 +302,16 @@
     <span class="kw">set</span> <span class="opt">protocol</span> <span class="str">"TCP"</span>
     <span class="kw">set</span> <span class="opt">comment</span> <span class="str">"AnythingLLM client - identified by OpenAI/JS User-Agent sent by the OpenAI JavaScript SDK"</span>
     <span class="kw">set</span> <span class="opt">signature</span> <span class="sig">"F-SBID( --name \"AnythingLLM.OpenAI.SDK\"; --service HTTP; --protocol tcp; --flow from_client; --pattern \"OpenAI/JS\"; --no_case; --context header; --weight 55;)"</span>
+  <span class="kw">next</span>
+
+  <span class="kw">edit</span> <span class="str">"AnythingLLM.NativeAPI"</span>
+    <span class="kw">set</span> <span class="opt">category</span> <span class="val">36</span>
+    <span class="kw">set</span> <span class="opt">technology</span> <span class="val">2</span>
+    <span class="kw">set</span> <span class="opt">behavior</span> <span class="val">9</span>
+    <span class="kw">set</span> <span class="opt">vendor</span> <span class="val">0</span>
+    <span class="kw">set</span> <span class="opt">protocol</span> <span class="str">"TCP"</span>
+    <span class="kw">set</span> <span class="opt">comment</span> <span class="str">"AnythingLLM native API - node+cors vs LM Studio polling"</span>
+    <span class="kw">set</span> <span class="opt">signature</span> <span class="sig">"F-SBID( --name \"AnythingLLM.NativeAPI\"; --service HTTP; --protocol tcp; --flow from_client; --pattern \"/api/v\"; --no_case; --context uri; --pattern \"node\"; --no_case; --context header; --pattern \"sec-fetch-mode\"; --no_case; --context header; --weight 53;)"</span>
   <span class="kw">next</span>
 
 <span class="kw">end</span></pre>
@@ -757,6 +770,7 @@ execute log display</pre>
   <table>
     <thead><tr><th>Version</th><th>Date</th><th>Summary</th></tr></thead>
     <tbody>
+      <tr><td class="mono bright">v1.2.0</td><td class="dim">2026-05-06</td><td>Added <code>AnythingLLM.NativeAPI</code> (sig 04b, weight 53) — triple-condition signature identifying AnythingLLM model enumeration via LM Studio native API. Differentiates Node.js 18+ fetch (<code>sec-fetch-mode</code> present) from LM Studio's http-module polling (<code>sec-fetch-mode</code> absent). Total: 38 signatures.</td></tr>
       <tr><td class="mono bright">v1.1.0</td><td class="dim">2026-05-06</td><td>Added <code>Client.CherryStudio</code> — Cherry Studio Electron client confirmed in traffic analysis. Fixed <code>Model.Command</code> false positive (pattern <code>command</code> → <code>command-r</code>, confirmed in production logs). Fixed <code>AnythingLLM.OpenAI.SDK</code> weight 60 → 55 to restore correct weight hierarchy. Total: 37 signatures.</td></tr>
       <tr><td class="mono bright">v1.0.1</td><td class="dim">2026-05-02</td><td>Fixed <code>LM.Studio.Native.API</code> false positive on cloud AI web frontends (chat.qwen.ai confirmed). Split into <code>LM.Studio.Native.API</code> (v0 path, unique) and <code>LM.Studio.Native.APIv1</code> (v1 path + node User-Agent). Total: 36 signatures.</td></tr>
       <tr><td class="mono bright">v1.0.0</td><td class="dim">2026-04-26</td><td>Initial release. 35 signatures covering infrastructure, base model families, and fine-tune organizations across OpenAI-compatible and Anthropic-compatible API formats.</td></tr>
@@ -799,7 +813,7 @@ execute log display</pre>
 </section>
 
 <footer>
-  <span>FortiOS 7.6.6 · config application custom · 37 signatures · v1.1.0</span>
+  <span>FortiOS 7.6.6 · config application custom · 38 signatures · v1.2.0</span>
   <span>Generated 2026-04-26 · github.com/sidewaysguy/fortios-llm-signatures</span>
 </footer>
 </div>

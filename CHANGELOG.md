@@ -6,6 +6,58 @@ Format: `[version] YYYY-MM-DD — description`
 
 ---
 
+## [1.2.0] 2026-05-06
+
+### Added — AnythingLLM.NativeAPI signature (sig 04b)
+
+Traffic analysis confirmed that AnythingLLM makes two types of requests to LM Studio:
+
+1. **Model enumeration** — GET `/api/v0/models` and `/api/v1/models` using `user-agent: node` and `sec-fetch-mode: cors`
+2. **Chat completions** — POST `/v1/chat/completions` using `user-agent: OpenAI/JS 4.95.1`
+
+The existing `LM.Studio.Native.APIv1` signature matched AnythingLLM's model enumeration calls because both LM Studio polling and AnythingLLM's backend use `user-agent: node`. The differentiator is `sec-fetch-mode: cors`: AnythingLLM's backend uses the Node.js 18+ native `fetch()` API which adds this header; LM Studio's own polling uses the Node.js `http` module which does not.
+
+**New signature:** `AnythingLLM.NativeAPI` uses a triple-condition match:
+- `/api/v` in URI (covers both v0 and v1 native LM Studio endpoints)
+- `node` in header (excludes browser-based traffic to cloud AI services using `/api/v1/`)
+- `sec-fetch-mode` in header (distinguishes Node.js fetch from http module)
+
+**Weight 53** — wins over `LM.Studio.Native.APIv1` (weight 50) when AnythingLLM is the client; does not compete with client identification signatures (weight 55). `LM.Studio.Native.APIv1` still correctly fires at weight 50 for LM Studio's own background polling (no `sec-fetch-mode`).
+
+This means a complete AnythingLLM session now produces an identifiable chain across flows:
+- Model enumeration → `AnythingLLM.NativeAPI` (this sig)
+- Chat POST with known model → model signature wins (e.g., `Model.Qwen`)
+- Chat POST with unknown model → `AnythingLLM.OpenAI.SDK` wins
+
+**Total signature count: 38** (was 37)
+
+**Tested on FortiOS 7.6.6** — AnythingLLM connecting to LM Studio Qwen model, confirmed 2026-05-06.
+
+### Fixed — Model.Solar false positive
+
+Production logs confirmed `Model.Solar` firing simultaneously with `Model.Qwen` on the same session when AnythingLLM was used. The word "solar" appeared in POST body message content (e.g., a conversation about solar energy), not in the `"model"` field. Same class of body-text false positive as the `Model.Command` fix in v1.1.0.
+
+**Fix:** Pattern changed from `solar` to `solar-`. All Upstage Solar model names use a hyphenated form (`solar-pro`, `solar-mini`, `solar-10.7b-instruct-v1.0`). The hyphenated string is highly unlikely to appear in natural language chat content where "solar" alone is common ("solar panels", "solar system", "solar energy").
+
+**Tested on FortiOS 7.6.6** — false positive reproduced with `solar` pattern, confirmed absent with `solar-` pattern, 2026-05-06.
+
+### Fixed — Proactive hyphen anchoring for 6 base model signatures
+
+Body-text false positives are a structural risk for any model family whose name is also a common English word. Following the same fix pattern as `Model.Command` (v1.1.0) and `Model.Solar` (above), six additional signatures were updated to require a trailing hyphen — anchoring the match to the model-name field format (`modelname-version-size`) rather than free-form word occurrence.
+
+| Signature | Old pattern | New pattern | Why safe |
+|-----------|-------------|-------------|----------|
+| `Model.Llama` | `llama` | `llama-` | All Meta Llama 2/3/4 deployments use `Llama-N.x-...` |
+| `Model.Phi` | `phi` | `phi-` | All Microsoft Phi models use `Phi-3-...`, `Phi-4`, `Phi-4-mini` |
+| `Model.Gemma` | `gemma` | `gemma-` | All Google Gemma models use `gemma-N-...` |
+| `Model.Granite` | `granite` | `granite-` | All IBM Granite models use `granite-N.x-...` |
+| `Model.Falcon` | `falcon` | `falcon-` | All TII Falcon models use `falcon-Nx` |
+| `Model.Ernie` | `ernie` | `ernie-` | All Baidu Ernie models use `ernie-N.x` |
+
+`Model.Mistral` was intentionally **not** changed: Mixtral, Magistral, and Devstral are matched via the `mistralai` publisher prefix in the model ID string. The string `mistral-` does not appear in `mistralai/Mixtral-...`, so adding the hyphen would silently drop all Mixtral-family coverage. The word "mistral" is rare enough in natural conversation that the false positive risk is acceptable.
+
+---
+
 ## [1.1.0] 2026-05-06
 
 ### Added — Client.CherryStudio signature

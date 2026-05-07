@@ -79,24 +79,24 @@ Matches on `/v1/chat/completions` URI + model name in the HTTP POST body. Requir
 
 | # | Signature Name | Pattern | Creator |
 |---|----------------|---------|---------|
-| 09 | `Model.Llama` | `llama` | Meta |
+| 09 | `Model.Llama` | `llama-` | Meta |
 | 10 | `Model.Mistral` | `mistral` | Mistral AI (covers Mixtral, Ministral, Magistral, Devstral) |
-| 11 | `Model.Phi` | `phi` | Microsoft |
-| 12 | `Model.Gemma` | `gemma` | Google |
+| 11 | `Model.Phi` | `phi-` | Microsoft |
+| 12 | `Model.Gemma` | `gemma-` | Google |
 | 13 | `Model.Qwen` | `qwen` | Alibaba |
 | 14 | `Model.DeepSeek` | `deepseek` | DeepSeek AI (weight 65 — see priority notes) |
 | 15 | `Model.Nemotron` | `nemotron` | NVIDIA |
 | 16 | `Model.LFM` | `lfm` | Liquid AI |
 | 17 | `Model.GLM` | `glm` | Z.ai / Zhipu |
-| 18 | `Model.Granite` | `granite` | IBM |
+| 18 | `Model.Granite` | `granite-` | IBM |
 | 19 | `Model.GPT-OSS` | `gpt-oss` | OpenAI (open source models) |
 | 20 | `Model.OLMo` | `olmo` | Allen AI |
-| 21 | `Model.Ernie` | `ernie` | Baidu |
+| 21 | `Model.Ernie` | `ernie-` | Baidu |
 | 22 | `Model.MiniMax` | `minimax` | MiniMax |
-| 23 | `Model.Falcon` | `falcon` | TII |
+| 23 | `Model.Falcon` | `falcon-` | TII |
 | 24 | `Model.Command` | `command-r` | Cohere |
 | 25 | `Model.InternLM` | `internlm` | Shanghai AI Lab |
-| 26 | `Model.Solar` | `solar` | Upstage |
+| 26 | `Model.Solar` | `solar-` | Upstage |
 
 ### Fine-Tune Organizations (27–35)
 
